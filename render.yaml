@@ -13,4 +13,4 @@ services:
       - key: DEBUG
         value: False
       - key: PYTHON_VERSION
-        value: 3.14
+        value: 3.14.3
