@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ mission.titre }} — VolunteerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+
+    <div class="col-lg-8">
+      {% if mission.image %}
+        <img src="{{ mission.image.url }}"
+             class="img-fluid rounded mb-4"
+             style="width:100%; height:360px;
+                    object-fit:cover;
+                    object-position:top center;">
+      {% endif %}
+
+      <span class="badge-domaine mb-3 d-inline-block">
+        {{ mission.get_domaine_display }}
+      </span>
+      <h1 class="fw-bold mb-3">{{ mission.titre }}</h1>
+
+      <div class="d-flex flex-wrap gap-3 mb-4 text-muted small">
+        <span>🏢 {{ mission.organisation.nom }}</span>
+        <span>📍 {{ mission.ville }}, {{ mission.pays }}</span>
+        <span>⏱️ {{ mission.get_duree_display }}</span>
+        <span>👥 {{ mission.places_restantes }} place{{ mission.places_restantes|pluralize }}</span>
+        <span>📅 Début : {{ mission.date_debut|date:"d F Y" }}</span>
+      </div>
+
+      <hr>
+
+      <h4 class="fw-bold mb-3">📋 Description</h4>
+      <p style="line-height:1.9; color:#444;">
+        {{ mission.description }}
+      </p>
+
+      {% if mission.competences_requises %}
+      <hr>
+      <h4 class="fw-bold mb-3">🎯 Compétences requises</h4>
+      <p style="line-height:1.9; color:#444;">
+        {{ mission.competences_requises }}
+      </p>
+      {% endif %}
+
+      <hr>
+
+      {% if deja_candidat %}
+        <div class="alert alert-success">
+          ✅ Tu as déjà postulé à cette mission.
+          En attente de réponse de l'organisation.
+        </div>
+      {% elif mission.statut == 'ouverte' and mission.places_restantes > 0 %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'postuler' mission.slug %}"
+             class="btn btn-primary btn-lg px-5">
+            Postuler à cette mission →
+          </a>
+        {% else %}
+          <div class="alert alert-warning">
+            <a href="{% url 'volunteer_login' %}"
+               class="fw-bold">Connecte-toi</a>
+            pour postuler à cette mission.
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="alert alert-secondary">
+          Cette mission est complète ou fermée.
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold mb-3">🏢 Organisation</h5>
+        {% if mission.organisation.logo %}
+          <img src="{{ mission.organisation.logo.url }}"
+               class="img-fluid rounded mb-3"
+               style="max-height:80px; object-fit:contain;">
+        {% endif %}
+        <h6 class="fw-bold">{{ mission.organisation.nom }}</h6>
+        <p class="text-muted small mb-2">
+          {{ mission.organisation.get_type_org_display }}
+        </p>
+        <p class="text-muted small">
+          📍 {{ mission.organisation.ville }},
+          {{ mission.organisation.pays }}
+        </p>
+        {% if mission.organisation.site_web %}
+        <a href="{{ mission.organisation.site_web }}"
+           target="_blank"
+           class="btn btn-outline-primary btn-sm w-100 mt-2">
+          Visiter le site →
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="card p-4">
+        <h5 class="fw-bold mb-3">📊 Résumé</h5>
+        <ul class="list-unstyled small">
+          <li class="mb-2">
+            📂 <strong>Domaine :</strong>
+            {{ mission.get_domaine_display }}
+          </li>
+          <li class="mb-2">
+            ⏱️ <strong>Durée :</strong>
+            {{ mission.get_duree_display }}
+          </li>
+          <li class="mb-2">
+            👥 <strong>Places :</strong>
+            {{ mission.places_disponibles }}
+          </li>
+          <li class="mb-2">✅ <strong>Disponibles :</strong>
+            {{ mission.places_restantes }}
+          </li>
+          <li class="mb-2">
+            📅 <strong>Début :</strong>
+            {{ mission.date_debut|date:"d F Y" }}
+          </li>
+          {% if mission.date_fin %}
+          <li class="mb-2">
+            🏁 <strong>Fin :</strong>
+            {{ mission.date_fin|date:"d F Y" }}
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

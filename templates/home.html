@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}VolunteerConnect Africa — Bénévolat en Afrique{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hero {
+    background: var(--dark);
+    color: var(--white);
+    padding: 100px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(
+      circle,
+      rgba(0,200,83,0.08) 0%,
+      transparent 70%
+    );
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(0,200,83,0.15);
+    border: 1px solid rgba(0,200,83,0.3);
+    color: var(--green);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 500px;
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--green);
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .mission-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    height: 100%;
+    transition: all 0.3s;
+  }
+  .mission-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    border-color: var(--green);
+  }
+  .mission-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .mission-img-placeholder {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(
+      135deg, #0d1117 0%, #1a2e1a 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+  }
+  .domaine-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .domaine-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--dark);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .domaine-btn:hover,
+  .domaine-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--dark);
+    font-weight: 700;
+  }
+  .how-step {
+    text-align: center;
+    padding: 32px 20px;
+  }
+  .step-icon {
+    width: 72px; height: 72px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 16px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-tag">
+          🌍 Plateforme de Bénévolat Africaine
+        </div>
+        <h1>Agis.<br>Connecte.<br><span>Transforme l'Afrique.</span></h1>
+        <p>
+          Rejoins des milliers de bénévoles
+          qui changent des vies à travers
+          l'Afrique. Trouve une mission
+          qui correspond à tes compétences.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="{% url 'volunteer_register' %}"
+             class="btn btn-primary btn-lg px-4">Devenir bénévole →
+          </a>
+          <a href="{% url 'organization_register' %}"
+             class="btn btn-outline-light btn-lg px-4">
+            Inscrire mon ONG
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0">
+        <div class="row g-3">
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="stat-num">{{ total_missions }}+</div>
+              <div class="stat-label">Missions</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="stat-num">{{ total_benevoles }}+</div>
+              <div class="stat-label">Bénévoles</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="stat-num">{{ total_orgs }}+</div>
+              <div class="stat-label">Organisations</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSIONS RÉCENTES -->
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between
+                align-items-center mb-4">
+      <div>
+        <div class="section-tag">// Opportunités</div>
+        <h2 class="section-title">
+          Missions <span>ouvertes</span>
+        </h2>
+      </div>
+      <a href="{% url 'mission_list' %}"
+         class="btn btn-outline-primary">
+        Voir toutes →
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for mission in missions %}
+      <div class="col-md-4">
+        <div class="mission-card">
+          {% if mission.image %}
+            <img src="{{ mission.image.url }}"
+                 class="mission-img"
+                 alt="{{ mission.titre }}">
+          {% else %}
+            <div class="mission-img-placeholder">
+              {% if mission.domaine == 'education' %}📚
+              {% elif mission.domaine == 'sante' %}🏥
+              {% elif mission.domaine == 'tech' %}💻
+              {% elif mission.domaine == 'environnement' %}🌱
+              {% else %}🤝{% endif %}
+            </div>
+          {% endif %}
+          <div class="p-4">
+            <div class="d-flex justify-content-between
+                        align-items-start mb-2">
+              <span class="badge-domaine">
+                {{ mission.get_domaine_display }}
+              </span>
+              <small class="text-muted">
+                {{ mission.duree }}
+              </small>
+            </div>
+            <h5 class="fw-bold mb-2">
+              {{ mission.titre|truncatechars:50 }}
+            </h5>
+            <p class="text-muted small mb-3">
+              📍 {{ mission.ville }}, {{ mission.pays }}
+            </p>
+            <div class="d-flex justify-content-between
+                        align-items-center">
+              <small class="text-muted">
+                👥 {{ mission.places_restantes }}
+                place{{ mission.places_restantes|pluralize }}
+                disponible{{ mission.places_restantes|pluralize }}
+              </small>
+              <a href="{% url 'mission_detail' mission.slug %}"
+                 class="btn btn-primary btn-sm">
+                Postuler →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <h4 class="text-muted">
+          Aucune mission pour le moment.
+        </h4>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="py-5" style="background:var(--dark);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-tag"
+           style="color:var(--green);">
+        // Comment ça marche
+      </div>
+      <h2 class="section-title"style="color:var(--white);">
+        Simple comme <span>3 étapes</span>
+      </h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="how-step">
+          <div class="step-icon">📝</div>
+          <h5 class="fw-bold text-white mb-2">
+            1. Crée ton profil
+          </h5>
+          <p style="color:rgba(255,255,255,0.6);
+                    font-size:0.9rem;">
+            Inscris-toi en 2 minutes.
+            Décris tes compétences
+            et ta disponibilité.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-step">
+          <div class="step-icon">🔍</div>
+          <h5 class="fw-bold text-white mb-2">
+            2. Trouve ta mission
+          </h5>
+          <p style="color:rgba(255,255,255,0.6);
+                    font-size:0.9rem;">
+            Parcours les missions
+            par domaine, pays ou durée.
+            Filtre selon tes préférences.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-step">
+          <div class="step-icon">🚀</div>
+          <h5 class="fw-bold text-white mb-2">
+            3. Postule et agis
+          </h5>
+          <p style="color:rgba(255,255,255,0.6);
+                    font-size:0.9rem;">
+            Envoie ta candidature.
+            L'organisation te contacte.
+            Commence à changer des vies.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'volunteer_register' %}"
+         class="btn btn-primary btn-lg px-5">
+        Commencer maintenant →
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

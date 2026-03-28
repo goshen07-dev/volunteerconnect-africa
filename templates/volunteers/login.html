@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Connexion — VolunteerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5">
+
+      <div class="text-center mb-5">
+        <div class="section-tag">// Connexion</div>
+        <h2 class="section-title">
+          Bon retour <span>parmi nous</span>
+        </h2>
+      </div>
+
+      <div class="card p-4">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-bold small">
+              Nom d'utilisateur
+            </label>
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small">
+              Mot de passe
+            </label>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   required>
+          </div>
+          <button type="submit"
+                  class="btn btn-primary w-100">
+            Se connecter →
+          </button>
+        </form>
+        <p class="text-center text-muted small mt-3">
+          Pas encore de compte ?
+          <a href="{% url 'volunteer_register' %}"
+             class="text-decoration-none fw-bold"
+             style="color:var(--green);">
+            S'inscrire gratuitement
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

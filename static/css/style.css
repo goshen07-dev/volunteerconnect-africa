@@ -1,0 +1,22 @@
+/* Formulaires */
+.form-control, .form-select {
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #00c853;
+  box-shadow: 0 0 0 3px rgba(0,200,83,0.12);
+  outline: none;
+}
+textarea.form-control { resize: vertical; }
+
+/* Badges */
+.badge { font-size: 0.75rem; font-weight: 600; }
+
+/* Buttons */
+.btn { border-radius: 8px; font-weight: 600; }
+.btn-lg { padding: 12px 28px; }
+.btn-sm { padding: 6px 14px; font-size: 0.82rem; }

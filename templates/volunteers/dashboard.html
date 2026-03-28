@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mon Dashboard — VolunteerConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <div class="d-flex justify-content-between
+              align-items-center mb-5">
+    <div>
+      <div class="section-tag">// Espace personnel</div>
+      <h2 class="section-title">
+        Bonjour,
+        <span>{{ volunteer.user.first_name }}</span> 👋
+      </h2>
+    </div>
+    <a href="{% url 'volunteer_profile_edit' %}"
+       class="btn btn-outline-primary">
+      ✏️ Modifier mon profil
+    </a>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card p-4 text-center">
+        {% if volunteer.photo %}
+          <img src="{{ volunteer.photo.url }}"
+               class="rounded-circle mx-auto mb-3"
+               style="width:80px; height:80px;
+                      object-fit:cover;">
+        {% else %}
+          <div class="rounded-circle mx-auto mb-3
+                      d-flex align-items-center
+                      justify-content-center"
+               style="width:80px; height:80px;
+                      background:var(--green-light);
+                      font-size:2rem;">
+            👤
+          </div>
+        {% endif %}
+        <h5 class="fw-bold">
+          {{ volunteer.user.get_full_name }}
+        </h5>
+        <p class="text-muted small">
+          📍 {{ volunteer.ville }}, {{ volunteer.pays }}
+        </p>
+        {% if volunteer.is_verified %}
+          <span class="badge bg-success">
+            ✅ Profil vérifié
+          </span>
+        {% else %}
+          <span class="badge bg-warning text-dark">
+            ⏳ En attente de vérification
+          </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="card p-3 text-center">
+            <div style="font-size:2rem;
+                        font-family:'Playfair Display',serif;
+                        color:var(--green);font-weight:900;">
+              {{ candidatures.count }}
+            </div>
+            <small class="text-muted">
+              Candidature{{ candidatures.count|pluralize }}
+            </small>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card p-3 text-center">
+            <div style="font-size:2rem;
+                        font-family:'Playfair Display',serif;
+                        color:var(--green);font-weight:900;">
+              {{ candidatures.filter.count }}
+            </div>
+            <small class="text-muted">Acceptée{{ candidatures.count|pluralize }}</small>
+          </div>
+        </div>
+      </div>
+
+      {% if volunteer.competences %}
+      <div class="card p-3 mt-3">
+        <h6 class="fw-bold mb-2">🎯 Mes compétences</h6>
+        <p class="text-muted small mb-0">
+          {{ volunteer.competences }}
+        </p>
+      </div>
+      {% endif %}
+
+      <div class="card p-3 mt-3">
+        <h6 class="fw-bold mb-2">ℹ️ Disponibilité</h6>
+        <span class="badge-domaine">
+          {{ volunteer.get_disponibilite_display }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="fw-bold mb-4">
+    📋 Mes candidatures
+  </h4>
+
+  {% for candidature in candidatures %}
+  <div class="card p-4 mb-3">
+    <div class="d-flex justify-content-between
+                align-items-start">
+      <div>
+        <h6 class="fw-bold mb-1">
+          {{ candidature.mission.titre }}
+        </h6>
+        <p class="text-muted small mb-1">
+          🏢 {{ candidature.mission.organisation.nom }}
+        </p>
+        <p class="text-muted small mb-0">
+          📍 {{ candidature.mission.ville }},
+          {{ candidature.mission.pays }} ·
+          📅 {{ candidature.created_at|date:"d F Y" }}</p>
+      </div>
+      <span class="badge
+        {% if candidature.statut == 'acceptee' %}bg-success
+        {% elif candidature.statut == 'refusee' %}bg-danger
+        {% else %}bg-warning text-dark{% endif %}">
+        {% if candidature.statut == 'acceptee' %}✅ Acceptée
+        {% elif candidature.statut == 'refusee' %}❌ Refusée
+        {% else %}⏳ En attente{% endif %}
+      </span>
+    </div>
+  </div>
+  {% empty %}
+  <div class="card p-5 text-center">
+    <h5 class="text-muted">
+      Tu n'as pas encore postulé à une mission.
+    </h5>
+    <a href="{% url 'mission_list' %}"
+       class="btn btn-primary mt-3">
+      Voir les missions disponibles →
+    </a>
+  </div>
+  {% endfor %}
+
+</div>
+{% endblock %}

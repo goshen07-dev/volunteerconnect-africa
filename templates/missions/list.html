@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Missions — VolunteerConnect Africa{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <div class="section-tag">// Opportunités</div>
+  <h1 class="section-title mb-4">
+    Missions <span>disponibles</span>
+  </h1>
+
+  <!-- FILTRES -->
+  <div class="card p-4 mb-4">
+    <form method="GET" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label fw-bold small">
+          🔍 Rechercher
+        </label>
+        <input type="text"
+               name="q"
+               value="{{ query }}"
+               class="form-control"
+               placeholder="Titre, ville, description...">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold small">
+          📂 Domaine
+        </label>
+        <select name="domaine" class="form-select">
+          <option value="">Tous les domaines</option>
+          {% for key, label in domaines %}
+          <option value="{{ key }}"
+            {% if domaine_actif == key %}selected{% endif %}>
+            {{ label }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold small">
+          📍 Pays
+        </label>
+        <input type="text"
+               name="pays"
+               class="form-control"
+               placeholder="Ex: Togo, Bénin...">
+      </div>
+      <div class="col-md-2">
+        <button type="submit"
+                class="btn btn-primary w-100">
+          Filtrer
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <p class="text-muted mb-4">
+    {{ missions.count }} mission{{ missions.count|pluralize }}
+    trouvée{{ missions.count|pluralize }}
+  </p>
+
+  <div class="row g-4">
+    {% for mission in missions %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        {% if mission.image %}
+          <img src="{{ mission.image.url }}"
+               class="card-img-top"
+               style="height:180px; object-fit:cover;
+                      object-position:top center;"
+               alt="{{ mission.titre }}">
+        {% else %}
+          <div style="height:180px; background:#0d1117;
+                      display:flex; align-items:center;
+                      justify-content:center;
+                      font-size:3rem; border-radius:12px 12px 0 0;">
+            🤝
+          </div>
+        {% endif %}
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="badge-domaine">
+              {{ mission.get_domaine_display }}
+            </span>
+            <small class="text-muted">
+              ⏱️ {{ mission.get_duree_display }}
+            </small>
+          </div>
+          <h5 class="fw-bold mb-2">
+            {{ mission.titre|truncatechars:55 }}
+          </h5>
+          <p class="text-muted small mb-2">
+            🏢 {{ mission.organisation.nom }}
+          </p>
+          <p class="text-muted small mb-3">
+            📍 {{ mission.ville }}, {{ mission.pays }}
+          </p>
+          <p class="text-muted small mb-3">
+            {{ mission.description|truncatechars:80 }}
+          </p>
+          <div class="d-flex justify-content-between
+                      align-items-center mt-auto">
+            <small class="text-muted">
+              👥 {{ mission.places_restantes }} place{{ mission.places_restantes|pluralize }}
+            </small>
+            <a href="{% url 'mission_detail' mission.slug %}"
+               class="btn btn-primary btn-sm">
+              Voir →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <h4 class="text-muted">
+        Aucune mission ne correspond à tes critères.
+      </h4>
+      <a href="{% url 'mission_list' %}"
+         class="btn btn-outline-primary mt-3">
+        Voir toutes les missions
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

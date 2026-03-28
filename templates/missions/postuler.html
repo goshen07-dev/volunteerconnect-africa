@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Postuler — {{ mission.titre }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+
+      <div class="text-center mb-5">
+        <div class="section-tag">// Candidature</div>
+        <h2 class="section-title">
+          Postule à cette <span>mission</span>
+        </h2>
+        <p class="text-muted mt-2">
+          {{ mission.titre }}
+        </p>
+      </div>
+
+      <div class="card p-4 mb-4"
+           style="background:var(--green-light);
+                  border-color:var(--green);">
+        <h6 class="fw-bold">📋 Mission sélectionnée</h6>
+        <strong>{{ mission.titre }}</strong>
+        <p class="mb-0 small text-muted mt-1">
+          📍 {{ mission.ville }}, {{ mission.pays }} ·
+          ⏱️ {{ mission.get_duree_display }}
+        </p>
+      </div>
+
+      <div class="card p-4">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label class="form-label fw-bold">
+              ✍️ Lettre de motivation
+            </label>
+            {{ form.message }}
+            <div class="form-text">
+              Explique pourquoi tu veux participer,
+              tes compétences pertinentes
+              et ta disponibilité.
+            </div>
+          </div>
+          <div class="d-flex gap-3">
+            <button type="submit"
+                    class="btn btn-primary px-5">
+              Envoyer ma candidature ✅
+            </button>
+            <a href="{% url 'mission_detail' mission.slug %}"
+               class="btn btn-outline-secondary">
+              Annuler
+            </a>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
